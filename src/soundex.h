@@ -63,8 +63,8 @@ Soundex(const char *input, char *out)
 	*dest++ = firstChar;
 	++result;
 
-	// TODO(Peacock): This is incorrect, see step 3 above concering 'h' and 'w'.
-	
+	// TODO(Peacock): This is incorrect, see step 3 above concerning 'h' and 'w'.
+
 	int prevValue = CHAR_LOOKUP[firstIndex];
 	while ((*src) && (result <= 3))
 	{
