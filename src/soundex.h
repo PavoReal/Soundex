@@ -1,10 +1,15 @@
+// This is a WIP, and isn't guaranteed to be correct, fast, or even functional...
+
 //
 // This is a stb style header, to use this library define PEACOCK_SOUNDEX_IMPLEMENTATION
 // in *one* c or c++ file.
 //
+// Docs:
+//
 // int Soundex(const char *input, char *out)
-//     Calculates the original soundex code (https://en.wikipedia.org/wiki/Soundex#Variants) for c-string input, and
-//     stores it in out. out *must* have a capacity of 4 bytes, one for the first char and three for the digits.
+//     Calculates the original soundex code (https://en.wikipedia.org/wiki/Soundex#Variants) for the c-string (input),
+//     storing the result in (out). (out) *must* have at least a capacity of 4 bytes, one for the first char and three
+//     for the digits. Returns the number of bytes written, should always be 4.
 //     DOES *NO* ERROR CHECKING
 //
 
@@ -15,7 +20,14 @@
 extern "C" {
 #endif
 
-// From https://en.wikipedia.org/wiki/Soundex#Variants:
+extern int Soundex(const char *input, char *out);
+
+//
+// IMPLEMENTATION
+//
+
+#ifdef PEACOCK_SOUNDEX_IMPLEMENTATION
+
 //
 // 1. Retain the first letter of the name and drop all other occurrences of a, e, i, o, u, y, h, w.
 //
@@ -34,14 +46,6 @@ extern "C" {
 // 4. If you have too few letters in your word that you can't assign three numbers, append with zeros until there are
 // three numbers. If you have more than 3 letters, just retain the first 3 numbers.
 //
-extern int Soundex(const char *input, char *out);
-
-//
-// IMPLEMENTATION
-//
-
-#ifdef PEACOCK_SOUNDEX_IMPLEMENTATION
-
 int 
 Soundex(const char *input, char *out)
 {
@@ -59,6 +63,8 @@ Soundex(const char *input, char *out)
 	*dest++ = firstChar;
 	++result;
 
+	// TODO(Peacock): This is incorrect, see step 3 above concering 'h' and 'w'.
+	
 	int prevValue = CHAR_LOOKUP[firstIndex];
 	while ((*src) && (result <= 3))
 	{
@@ -69,12 +75,9 @@ Soundex(const char *input, char *out)
 
 		if (value == -1)
 		{
-			++src;
 			prevValue = value;
-			continue;
-		}
-
-		if (value != prevValue)
+		} 
+		else if (value != prevValue)
 		{
 			*dest++ = value + '0';
 			++result;
