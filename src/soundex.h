@@ -1,17 +1,19 @@
+//
+// This is a stb style header, to use this library define PEACOCK_SOUNDEX_IMPLEMENTATION
+// in *one* c or c++ file.
+//
+// int Soundex(const char *input, char *out)
+//     Calculates the original soundex code (https://en.wikipedia.org/wiki/Soundex#Variants) for c-string input, and
+//     stores it in out. out *must* have a capacity of 4 bytes, one for the first char and three for the digits.
+//     DOES *NO* ERROR CHECKING
+//
+
 #ifndef PEACOCK_SOUNDEX_H
 #define PEACOCK_SOUNDEX_H
 
-#include <stdint.h>
-
-typedef uint8_t   u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
-typedef uint64_t u64;
-
-typedef int8_t  s8;
-typedef int16_t s16;
-typedef int32_t s32;
-typedef int64_t s64;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // From https://en.wikipedia.org/wiki/Soundex#Variants:
 //
@@ -32,30 +34,38 @@ typedef int64_t s64;
 // 4. If you have too few letters in your word that you can't assign three numbers, append with zeros until there are
 // three numbers. If you have more than 3 letters, just retain the first 3 numbers.
 //
-inline s32 
-Soundex(const char *input, char *out, s32 outMaxLength = -1)
+extern int Soundex(const char *input, char *out);
+
+//
+// IMPLEMENTATION
+//
+
+#ifdef PEACOCK_SOUNDEX_IMPLEMENTATION
+
+int 
+Soundex(const char *input, char *out)
 {
-	s32 result = 0; 	
+	int result = 0; 	
 
 	// { a, b, c, ...} --> { -1, 1, 2, ...}
-	s32 CHAR_LOOKUP[] = { -1, 1, 2, 3, -1, 1, 2, -1, -1, 2, 2, 4, 5, 5, -1, 1, 2, 6, 2, 3, -1, 1, -1, 2, -1, 2 };
+	int CHAR_LOOKUP[] = { -1, 1, 2, 3, -1, 1, 2, -1, -1, 2, 2, 4, 5, 5, -1, 1, 2, 6, 2, 3, -1, 1, -1, 2, -1, 2 };
 
 	char *dest       = out;
 	const char *src  = input;
 
 	char firstChar = *src++ & 0xDF;
-	s32 firstIndex = firstChar - 'A';
+	int firstIndex = firstChar - 'A';
 
 	*dest++ = firstChar;
 	++result;
 
-	s32 prevValue = CHAR_LOOKUP[firstIndex];
+	int prevValue = CHAR_LOOKUP[firstIndex];
 	while ((*src) && (result <= 3))
 	{
 		char c = *src & 0xDF;
-		s32 index = c - 'A';
+		int index = c - 'A';
 
-		s32 value = CHAR_LOOKUP[index];
+		int value = CHAR_LOOKUP[index];
 
 		if (value == -1)
 		{
@@ -81,5 +91,10 @@ Soundex(const char *input, char *out, s32 outMaxLength = -1)
 
 	return result;
 }
+#endif
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

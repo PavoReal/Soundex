@@ -3,17 +3,18 @@
 // #define STB_DS_IMPLEMENTATION
 // #include "stb_ds.h"
 
+#define PEACOCK_SOUNDEX_IMPLEMENTATION
 #include "soundex.h"
 
 int 
 main(int argc, char **argv)
 {
-	for (s32 i = 1; i < argc; ++i)
+	for (int i = 1; i < argc; ++i)
 	{
 		char *string = argv[i];
 		char buffer[32]    = {0};
 
-		s32 b = Soundex(string, buffer, sizeof(buffer));	
+		int b = Soundex(string, buffer);	
 
 		if (b <= 0)
 		{
