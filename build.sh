@@ -20,3 +20,5 @@ mkdir -p build/
 
 echo "$(which $CXX) $CPP_FLAGS $LD_FLAGS src/test.cpp -o build/soundex_test"
 $CXX $CPP_FLAGS $LD_FLAGS src/test.cpp -o build/soundex_test
+
+cp *.txt build/
