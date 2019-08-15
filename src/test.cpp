@@ -19,6 +19,14 @@ typedef int16_t s16;
 typedef int32_t s32;
 typedef int64_t s64;
 
+inline bool
+IsWhitespace(char c)
+{
+	bool result = (c == ' ') || (c == '\r') || (c == '\n') || (c == '\t');
+
+	return result;
+}
+
 int 
 test_args(int argc, char **argv)
 {
@@ -62,18 +70,23 @@ test_file(const char *path)
 
 	while (r < fileSize)
 	{
-		u64 dr = (u64) read(fd, buffer + r, fileSize);
+		u64 dr = (u64) read(fd, buffer + r, fileSize - r);
 		r += dr;
 	}
 
 	char *index     = (char*) buffer;
 	char *stopIndex = index + fileSize;
 
-	while (index != stopIndex)
+	while (index < stopIndex)
 	{
+		while (IsWhitespace(*index))
+		{
+			++index;
+		}
+
 		char *start = index;
 
-		while ((*index != '\n') && (index != stopIndex))
+		while (!IsWhitespace(*index) && (index < stopIndex))
 		{
 			++index;
 		}
@@ -93,19 +106,19 @@ test_file(const char *path)
 		}
 	}
 
+	free(buffer);
 	close(fd);
+
 	return 0;
 }
 
 int
 main(int argc, char **argv)
 {
-	puts("~~~~~~~~~~FILE~~~~~~~~~~");
 	if (test_file("words.txt") != 0)
 	{
 		puts("FILE ERROR");
 	}
 
-	puts("~~~~~~~~~~ARGS~~~~~~~~~~");
 	return test_args(argc, argv);
 }
