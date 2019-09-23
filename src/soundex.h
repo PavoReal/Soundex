@@ -79,7 +79,7 @@ Soundex(const char *input, char *out)
 		} 
 		else if (value != prevValue)
 		{
-			*dest++ = value + '0';
+			*dest++ = (char) (value + '0');
 			++result;
 			prevValue = value;
 		}
