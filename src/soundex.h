@@ -63,8 +63,6 @@ Soundex(const char *input, char *out)
 	*dest++ = firstChar;
 	++result;
 
-	// TODO(Peacock): This is incorrect, see step 3 above concerning 'h' and 'w'.
-
 	int prevValue = CHAR_LOOKUP[firstIndex];
 	while ((*src) && (result <= 3))
 	{
@@ -75,8 +73,14 @@ Soundex(const char *input, char *out)
 
 		if (value == -1)
 		{
-			prevValue = value;
-		} 
+			// Per step 3: 'h' and 'w' are transparent for duplicate detection,
+			// so we do NOT reset prevValue for them. Vowels (a, e, i, o, u, y)
+			// DO reset prevValue, allowing same-coded consonants to be coded twice.
+			if (c != 'H' && c != 'W')
+			{
+				prevValue = value;
+			}
+		}
 		else if (value != prevValue)
 		{
 			*dest++ = (char) (value + '0');
