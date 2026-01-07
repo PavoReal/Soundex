@@ -24,5 +24,8 @@ $CXX $CPP_FLAGS $LD_FLAGS src/test.cpp -o build/soundex_test
 echo "$(which $CXX) $CPP_FLAGS $LD_FLAGS src/xperm.cpp -o build/xperm"
 $CXX $CPP_FLAGS $LD_FLAGS src/xperm.cpp -o build/xperm
 
+echo "$(which $CXX) $CPP_FLAGS $LD_FLAGS src/test_soundex.cpp -o build/test_soundex"
+$CXX $CPP_FLAGS $LD_FLAGS src/test_soundex.cpp -o build/test_soundex
+
 cp *.txt build/
 
